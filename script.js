@@ -42,17 +42,23 @@ function maketable() {
     document.body.appendChild(result);
 
     button.onclick = (_) => {
-
-        for(const rowInputs of inputs) {
-            for(var i = 0; i < rowInputs.length; i++) {
+        let input_str = "";
+        for(var i = 0; i < inputs.length; i++) {
+            for(var j = 0; j < activityTypes.length; j++) {
                 const factor = activityTypes[i][1];
                 const value = Number(rowInputs[i].value);
                 const equivalentValue = Math.floor( value / factor + 0.01 );
-                console.log("ROW ", i, equivalentValue);
+                input_str += `${i};${j};${equivalentValue}\n`;
             }
         }
+        input_str = input_str.substring(0, input_str.length-1);
 
         // compute luker here
+
+        output_str = "";
+
+
+        // Remove old luker
 
         for(const luke of luker) {
             luke.innerHTML = '';
@@ -60,7 +66,20 @@ function maketable() {
                 luke.innerHTML += `<span>${l}</span>`;
             }
         }
-        result.innerHTML = "ingen poeng";
+
+        let num_luker = 0;
+        let num_poeng = 0;
+        for(const line of output_str.split("\n")) {
+            const fields = output_str.split(";");
+            const day = Number(fields[0]);
+            const activity_type = Number(fields[1]);
+            const luke = Number(fields[2]);
+            luker[day].innerHTML += `<span>act${activityTypes} ${luke}</span>`;
+            num_luker += 1;
+            num_poeng += luke;
+        }
+
+        result.innerHTML = `<strong>${num_poeng}</strong> poeng på ${num_luker} luker!`
     };
 }
 
